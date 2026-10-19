@@ -1,54 +1,126 @@
 ﻿@using MyWebApp.Models
 @model IEnumerable<Student>
 
-<a asp-action="Create" class="btn btn-primary my-3">Create Student</a>
+@{
+    ViewData["Title"] = "Danh sách sinh viên";
+    Layout = "~/Views/Shared/MyLayoutHelper.cshtml";
+}
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Mã</th>
-            <th>Họ tên</th>
-            <th>Ngày sinh</th>
-            <th>Ngành</th>
-            <th>Giới tính</th>
-            <th>Hệ ĐT</th>
-            <th>Địa chỉ</th>
-            <th>Email</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var s in Model)
-        {
+<div class="container-fluid px-4">
+    <h2 class="mt-4">Danh sách sinh viên</h2>
+
+    <div class="mb-3">
+        <!-- Có thể dùng href="/Admin/Student/Add" hoặc asp-route="student_add" -->
+        <a asp-route="student_add" class="btn btn-primary">
+            Create Student
+        </a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
             <tr>
-                <td>@s.Id</td>
-                <td>@s.Name</td>
-                <td>@s.DateOfBorth</td>
-                <td>
-                    @{
-                        string str = "";
-                        switch (s.Branch)
-                        {
-                            case Branch.IT:
-                                str = "CNTT";
-                                break;
-                            case Branch.BE:
-                                str = "Kinh tế";
-                                break;
-                            case Branch.CE:
-                                str = "Công trình";
-                                break;
-                            case Branch.EE:
-                                str = "Điện - Điện tử";
-                                break;
-                        }
-                    }
-                    @str
-                </td>
-                <td>@(s.Gender == Gender.Male ? "Nam" : "Nữ")</td>
-                <td>@(s.IsRegular ? "Chính quy" : "Phi chính quy")</td>
-                <td>@s.Address</td>
-                <td>@s.Email</td>
+                <th>Avatar</th>
+                <th>Mã</th>
+                <th>Họ tên</th>
+                <th>Ngày sinh</th>
+                <th>Ngành</th>
+                <th>Giới tính</th>
+                <th>Hệ ĐT</th>
+                <th>Địa chỉ</th>
+                <th>Email</th>
             </tr>
+        </thead>
+
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <!-- Ảnh đại diện -->
+                        <td class="text-center align-middle">
+                            @if (!string.IsNullOrEmpty(s.AvatarUrl))
+                            {
+                                <img src="@s.AvatarUrl"
+                                     alt="Avatar"
+                                     width="50"
+                                     height="50"
+                                     style="object-fit: cover; border-radius: 50%;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-avatar.png"
+                                     alt="No Avatar"
+                                     width="50"
+                                     height="50"
+                                     style="object-fit: cover; border-radius: 50%;" />
+                            }
+                        </td>
+
+                        <td>@s.Id</td>
+                        <td>@s.Name</td>
+                        <td>@s.DateOfBirth</td>
+
+                        <!-- Ngành học -->
+                        <td>
+                            @{
+                                string str = "";
+
+                                switch (s.Branch)
+                                {
+                                    case Branch.IT:
+                                        str = "CNTT";
+                                        break;
+
+                                    case Branch.BE:
+                                        str = "Kinh tế";
+                                        break;
+
+                                    case Branch.CE:
+                                        str = "Công trình";
+                                        break;
+
+                                    case Branch.EE:
+                                        str = "Điện - Điện tử";
+                                        break;
+                                }
+                            }
+
+                            @str
+                        </td>
+
+                        <td>
+                            @(s.Gender == Gender.Male ? "Nam" : "Nữ")
+                        </td>
+
+                        <td>
+                            @(s.IsRegular ? "Chính quy" : "Phi chính quy")
+                        </td>
+
+                        <td>@s.Address</td>
+                        <td>@s.Email</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" class="text-center">
+                        Chưa có sinh viên nào.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        var table = document.querySelector("table");
+        if (table) {
+            table.onclick = function onTableClick() {
+                table.style = "background-color: yellow;";
+            };
         }
-    </tbody>
-</table>
+    </script>
+}
