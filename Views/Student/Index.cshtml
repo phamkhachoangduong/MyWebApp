@@ -23,6 +23,7 @@
                 <th>Mã</th>
                 <th>Họ tên</th>
                 <th>Ngày sinh</th>
+                <th>Điểm</th>
                 <th>Ngành</th>
                 <th>Giới tính</th>
                 <th>Hệ ĐT</th>
@@ -60,6 +61,7 @@
                         <td>@s.Id</td>
                         <td>@s.Name</td>
                         <td>@s.DateOfBirth</td>
+                        <td>@(s.Score.HasValue ? s.Score.Value.ToString("0.0") : "Chưa có")</td>
 
                         <!-- Ngành học -->
                         <td>

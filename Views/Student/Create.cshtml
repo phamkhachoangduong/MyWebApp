@@ -10,12 +10,12 @@
     <h2 class="mt-4">Thêm mới sinh viên</h2>
     <hr />
 
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
     <form asp-route="student_add"
           method="post"
           enctype="multipart/form-data"
           class="mt-3">
-
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <!-- Họ tên -->
         <div style="margin-top:7px" class="form-group row">
@@ -54,12 +54,13 @@
                 <select asp-for="Branch"
                         class="form-select"
                         asp-items="Html.GetEnumSelectList<Branch>()">
+                    <option value="">-- Chọn ngành học --</option>
                 </select>
                 <span asp-validation-for="Branch" class="text-danger"></span>
             </div>
         </div>
 
-        <!-- Sinh viên chính quy -->
+        <!-- Hệ đào tạo -->
         <div style="margin-top:7px" class="form-group row">
             <label asp-for="IsRegular" class="col-sm-2 col-form-label">Hệ đào tạo</label>
             <div class="col-sm-10 d-flex align-items-center">
@@ -67,19 +68,33 @@
                        class="form-check-input"
                        asp-for="IsRegular" />
                 <label asp-for="IsRegular" class="ms-2">Chính quy</label>
+                <span asp-validation-for="IsRegular" class="text-danger ms-3"></span>
             </div>
         </div>
 
-        <!-- Ngày sinh (đã sửa thành DateOfBirth) -->
+        <!-- Ngày sinh -->
         <div style="margin-top:7px" class="form-group row">
             <label asp-for="DateOfBirth" class="col-sm-2 col-form-label">Ngày sinh</label>
             <div class="col-sm-10">
                 <input asp-for="DateOfBirth"
-                       type="datetime-local"
+                       type="date"
                        class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
         </div>
+        <!-- Điểm  -->
+        <div style="margin-top:7px" class="form-group row">
+            <label asp-for="Score" class="col-sm-2 col-form-label">Điểm</label>
+            <div class="col-sm-10">
+                <input asp-for="Score"
+                        type="number"
+                        step="0.1"
+                        class="form-control"
+                        placeholder="Nhập điểm từ 0.0 đến 10.0" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+           </div>
+        </div>
+
 
         <!-- Giới tính -->
         <div style="margin-top:7px" class="form-group row">
@@ -95,14 +110,12 @@
                                    asp-for="Gender"
                                    value="@gender"
                                    id="Gender@(gender)" />
-
                             <label class="form-check-label" for="Gender@(gender)">
                                 @(gender == Gender.Male ? "Nam" : "Nữ")
                             </label>
                         </div>
                     }
                 }
-
                 <br />
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
@@ -121,19 +134,14 @@
 
         <!-- Ảnh đại diện -->
         <div style="margin-top:7px" class="form-group row">
-            <label asp-for="AvatarFile" class="col-sm-2 col-form-label">
-                Ảnh đại diện
-            </label>
+            <label asp-for="AvatarFile" class="col-sm-2 col-form-label">Ảnh đại diện</label>
             <div class="col-sm-10">
                 <input asp-for="AvatarFile"
                        type="file"
                        class="form-control"
                        accept=".jpg,.jpeg,.png,.gif" />
-
                 <span asp-validation-for="AvatarFile" class="text-danger"></span>
-                <small class="text-muted">
-                    Chấp nhận JPG, JPEG, PNG, GIF; tối đa 2MB.
-                </small>
+                <small class="text-muted">Chấp nhận JPG, JPEG, PNG, GIF; tối đa 2MB.</small>
             </div>
         </div>
 
@@ -141,9 +149,7 @@
         <div style="margin-top:10px" class="form-group row">
             <div class="col-sm-10 offset-sm-2">
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-route="student_list" class="btn btn-secondary">
-                    Quay lại danh sách
-                </a>
+                <a asp-route="student_list" class="btn btn-secondary">Quay lại danh sách</a>
             </div>
         </div>
 
