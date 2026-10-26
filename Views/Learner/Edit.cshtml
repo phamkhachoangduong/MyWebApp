@@ -1,0 +1,54 @@
+﻿@model MyWebApp.Models.Learner
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/MyLayoutHelper.cshtml";
+}
+
+<div class="ms-2 mx-2">
+    <h1>Edit Learner</h1>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="Edit" method="post" class="mt-3">
+        <!-- Khóa chính ẩn đi -->
+        <input type="hidden" asp-for="LearnerID" />
+
+        <div style="margin-top:7px" class="form-group row">
+            <label asp-for="FirstMidName" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="FirstMidName" class="form-control" />
+            </div>
+            <span asp-validation-for="FirstMidName" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:7px" class="form-group row">
+            <label asp-for="LastName" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="LastName" class="form-control" />
+            </div>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:7px" class="form-group row">
+            <label asp-for="MajorID" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <select asp-for="MajorID" class="form-select" asp-items="@ViewBag.MajorID"></select>
+            </div>
+            <span asp-validation-for="MajorID" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:7px" class="form-group row">
+            <label asp-for="EnrollmentDate" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="EnrollmentDate" type="date" class="form-control" />
+            </div>
+            <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:10px" class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
