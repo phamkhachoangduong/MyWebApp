@@ -11,7 +11,23 @@
     <!-- Nạp danh sách chuyên ngành qua ViewComponent -->
     @await Component.InvokeAsync("Major")
 
-    <!-- Bao bọc bảng bằng div#content để AJAX thay thế nội dung -->
+    <!-- 1. Thêm Form tìm kiếm sinh viên theo tên (Bước 3) -->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input id="keyword"
+                   class="form-control"
+                   name="keyword"
+                   type="text"
+                   placeholder="Search learner" />
+            <button id="btnSearch"
+                    class="btn btn-primary"
+                    type="button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <!-- 2. Khung nội dung bảng và thanh phân trang ban đầu -->
     <div id="content">
         <table class="table table-striped">
             <thead>
@@ -41,6 +57,19 @@
                 }
             </tbody>
         </table>
+
+        <!-- 3. Thanh nav-phân trang (Bước 3) -->
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.pageNum; i++)
+            {
+                <li class="page-item"
+                    page="@i"
+                    @(ViewBag.mid != null ? "mid=\"" + ViewBag.mid + "\"" : "")
+                    @(ViewBag.keyword != null ? "keyword=\"" + ViewBag.keyword + "\"" : "")>
+                    <a class="page-link" href="javascript:void(0);">@i</a>
+                </li>
+            }
+        </ul>
     </div>
 
     <a asp-action="Create" class="btn btn-primary">Create New Student</a>
@@ -49,24 +78,70 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Dùng event delegation để chắc chắn bắt được click trên các thẻ li của ul.nav
+            // Sự kiện 1: Bấm vào số trang (nav phân trang)
+            $('body').on('click', 'li.page-item', function (e) {
+                e.preventDefault();
+                var page = $(this).attr("page");
+                var mid = $(this).attr("mid");
+                var keyword = $(this).attr("keyword");
+
+                var data = {
+                    mid: mid,
+                    keyword: keyword,
+                    pageIndex: page
+                };
+
+                $.ajax({
+                    url: "/Learner/LearnerFilter",
+                    type: "GET",
+                    data: data,
+                    success: function (response) {
+                        $("div#content").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi phân trang: " + error);
+                    }
+                });
+            });
+
+            // Sự kiện 2: Bấm vào chuyên ngành (Lọc chuyên ngành)
             $(document).on("click", "ul.nav li.nav-item", function (e) {
                 e.preventDefault();
                 var id = $(this).attr("id");
 
-                if (id) {
-                    $.ajax({
-                        url: "/Learner/LearnerByMajorID",
-                        type: "GET",
-                        data: { mid: id },
-                        success: function (response) {
-                            $("#content").html(response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Lỗi AJAX: " + error);
-                        }
-                    });
-                }
+                var data = { mid: id };
+
+                $.ajax({
+                    url: "/Learner/LearnerFilter",
+                    type: "GET",
+                    data: data,
+                    success: function (response) {
+                        $("div#content").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi lọc chuyên ngành: " + error);
+                    }
+                });
+            });
+
+            // Sự kiện 3: Bấm vào nút kính lúp (Tìm kiếm)
+            $("#btnSearch").click(function (e) {
+                e.preventDefault();
+                var keyword = $("#keyword").val();
+
+                var data = { keyword: keyword };
+
+                $.ajax({
+                    url: "/Learner/LearnerFilter",
+                    type: "GET",
+                    data: data,
+                    success: function (response) {
+                        $("div#content").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi tìm kiếm: " + error);
+                    }
+                });
             });
         });
     </script>
