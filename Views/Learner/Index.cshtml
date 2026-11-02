@@ -7,33 +7,67 @@
 
 <div class="ms-2 mx-2">
     <h1>Learner List</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Mã</th>
-                <th>Tên</th>
-                <th>Họ</th>
-                <th>Ngành</th>
-                <th>Ngày Nhập Học</th>
-                <th>Chức năng</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var s in Model)
-            {
+
+    <!-- Nạp danh sách chuyên ngành qua ViewComponent -->
+    @await Component.InvokeAsync("Major")
+
+    <!-- Bao bọc bảng bằng div#content để AJAX thay thế nội dung -->
+    <div id="content">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@s.LearnerID</td>
-                    <td>@s.FirstMidName</td>
-                    <td>@s.LastName</td>
-                    <td>@s.Major.MajorName</td>
-                    <td>@s.EnrollmentDate</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@s.LearnerID">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@s.LearnerID">Delete</a>
-                    </td>
+                    <th>Mã</th>
+                    <th>Tên</th>
+                    <th>Họ</th>
+                    <th>Ngành</th>
+                    <th>Ngày Nhập Học</th>
+                    <th>Chức năng</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td>@s.LearnerID</td>
+                        <td>@s.FirstMidName</td>
+                        <td>@s.LastName</td>
+                        <td>@s.Major.MajorName</td>
+                        <td>@s.EnrollmentDate</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@s.LearnerID">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@s.LearnerID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
     <a asp-action="Create" class="btn btn-primary">Create New Student</a>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Dùng event delegation để chắc chắn bắt được click trên các thẻ li của ul.nav
+            $(document).on("click", "ul.nav li.nav-item", function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+
+                if (id) {
+                    $.ajax({
+                        url: "/Learner/LearnerByMajorID",
+                        type: "GET",
+                        data: { mid: id },
+                        success: function (response) {
+                            $("#content").html(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Lỗi AJAX: " + error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -95,10 +95,28 @@ namespace MyWebApp.Controllers
             return (db.Learners?.Any(e => e.LearnerID == id)).GetValueOrDefault();
         }
         // 8.1.1 Hiển thị danh sách
-        public IActionResult Index()
+        public IActionResult Index(int? mid)
         {
-            var learners = db.Learners.Include(m => m.Major).ToList();
-            return View(learners);
+            if (mid == null)
+            {
+                var learners = db.Learners
+                    .Include(m => m.Major).ToList();
+                return View(learners);
+            }
+            else
+            {
+                var learners = db.Learners
+                    .Where(l => l.MajorID == mid)
+                    .Include(m => m.Major).ToList();
+                return View(learners);
+            }
+        }
+        public IActionResult LearnerByMajorID(int mid)
+        {
+            var learners = db.Learners
+                .Where(l => l.MajorID == mid)
+                .Include(m => m.Major).ToList();
+            return PartialView("LearnerTable", learners);
         }
     }
 }
